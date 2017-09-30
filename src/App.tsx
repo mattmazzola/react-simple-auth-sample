@@ -1,74 +1,87 @@
 import * as React from 'react'
+import { returntypeof } from 'react-redux-typescript'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import {
   BrowserRouter as Router,
   Route,
   NavLink
 } from 'react-router-dom'
 // import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
-// import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect'
-import { createStore } from 'redux'
-import { Provider } from 'react-redux'
-import rootReducer from './reducers'
-// import { State } from './types'
+import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect'
+
+import { State } from './types'
 import './App.css'
 import Home from './Home'
 import Apps from './Apps'
 import Docs from './Docs'
 import Login from './Login'
+import Profile from './Profile'
 
-export const createReduxStore = () => createStore(rootReducer)
+const userIsAuthenticated = connectedRouterRedirect<any, State>({
+  // The url to redirect user to if they fail
+  redirectPath: '/login',
+  // Determine if the user is authenticated or not
+  authenticatedSelector: state => state.user.isLoggedIn,
+  // A nice display name for this check
+  wrapperDisplayName: 'UserIsAuthenticated'
+})
 
-// const userIsAuthenticated = connectedRouterRedirect<{}, State>({
-//   // The url to redirect user to if they fail
-//   redirectPath: '/login',
-//   // Determine if the user is authenticated or not
-//   authenticatedSelector: state => state.user.isLoggedIn,
-//   // A nice display name for this check
-//   wrapperDisplayName: 'UserIsAuthenticated'
-// })
-
-// const locationHelper = locationHelperBuilder({})
-// const userIsNotAuthenticated = connectedRouterRedirect<{}, State>({
+// const userIsNotAuthenticated = connectedRouterRedirect<any, State>({
 //   // This sends the user either to the query param route if we have one, or to the landing page if none is specified and the user is already logged in
-//   redirectPath: (state, ownProps) => locationHelper.getRedirectQueryParam(ownProps) || '/apps',
+//   redirectPath: '/apps',
 //   // This prevents us from adding the query parameter when we send the user away from the login page
-//   allowRedirectBack: false,
 //   // Determine if the user is authenticated or not
 //   authenticatedSelector: state => state.user.isLoggedIn,
 //   // A nice display name for this check
 //   wrapperDisplayName: 'UserIsNotAuthenticated'
 // })
 
-// const HomeC = userIsAuthenticated(Home)
-// const LoginC = userIsNotAuthenticated(Login)
-// const AppsC = userIsAuthenticated(Apps)
-// const DocsC = userIsAuthenticated(Docs)
+const ProtectedHome = userIsAuthenticated(Home)
+// const RedirectedLogin = userIsNotAuthenticated(Login)
+const ProtectedApps = userIsAuthenticated(Apps)
+const ProtectedDocs = userIsAuthenticated(Docs)
+const ProtectedProfile = userIsAuthenticated(Profile)
 
-class App extends React.Component {
+class component extends React.Component<Props, {}> {
   render() {
     return (
-      <Provider store={createReduxStore()}>
-        <Router>
+      <Router>
+        <div>
+          <h1>React Auth Test</h1>
+          <nav>
+            <ul>
+              <li><NavLink to="/" exact={true}>Home</NavLink></li>
+              <li><NavLink to="/apps">Apps</NavLink></li>
+              <li><NavLink to="/docs">Docs</NavLink></li>
+              {this.props.user.isLoggedIn && <li><NavLink to="/profile">Profile</NavLink></li>}
+            </ul>
+          </nav>
           <div>
-            <h1>React Auth Test</h1>
-            <nav>
-              <ul>
-                <li><NavLink to="/" exact={true}>Home</NavLink></li>
-                <li><NavLink to="/apps">Apps</NavLink></li>
-                <li><NavLink to="/docs">Docs</NavLink></li>
-              </ul>
-            </nav>
-            <div>
-              <Route path="/" exact={true} component={Home} />
-              <Route path="/login" component={Login} />
-              <Route path="/apps" component={Apps} />
-              <Route path="/docs" component={Docs} />
-            </div>
+            <Route path="/" exact={true} component={ProtectedHome} />
+            <Route path="/login" component={Login} />
+            <Route path="/apps" component={ProtectedApps} />
+            <Route path="/docs" component={ProtectedDocs} />
+            <Route path="/profile" component={ProtectedProfile} />
           </div>
-        </Router>
-      </Provider>
+        </div>
+      </Router>
     );
   }
 }
 
-export default App;
+const mapDispatchToProps = (dispatch: any) => {
+  return bindActionCreators({
+  }, dispatch)
+}
+const mapStateToProps = (state: State) => {
+  return {
+    user: state.user
+  }
+}
+
+const stateProps = returntypeof(mapStateToProps);
+const dispatchProps = returntypeof(mapDispatchToProps);
+type Props = typeof stateProps & typeof dispatchProps;
+
+export default connect<typeof stateProps, typeof dispatchProps, {}>(mapStateToProps, mapDispatchToProps)(component);
