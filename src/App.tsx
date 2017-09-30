@@ -7,7 +7,7 @@ import {
   Route,
   NavLink
 } from 'react-router-dom'
-// import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
+import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
 import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect'
 
 import { State } from './types'
@@ -27,18 +27,21 @@ const userIsAuthenticated = connectedRouterRedirect<any, State>({
   wrapperDisplayName: 'UserIsAuthenticated'
 })
 
-// const userIsNotAuthenticated = connectedRouterRedirect<any, State>({
-//   // This sends the user either to the query param route if we have one, or to the landing page if none is specified and the user is already logged in
-//   redirectPath: '/apps',
-//   // This prevents us from adding the query parameter when we send the user away from the login page
-//   // Determine if the user is authenticated or not
-//   authenticatedSelector: state => state.user.isLoggedIn,
-//   // A nice display name for this check
-//   wrapperDisplayName: 'UserIsNotAuthenticated'
-// })
+const locationHelper = locationHelperBuilder({})
+const userIsNotAuthenticated = connectedRouterRedirect<any, State>({
+  // This sends the user either to the query param route if we have one, or to the landing page if none is specified and the user is already logged in
+  redirectPath: (state, ownProps) => locationHelper.getRedirectQueryParam(ownProps) || '/apps',
+  // This prevents us from adding the query parameter when we send the user away from the login page
+  allowRedirectBack: false,
+  // This prevents us from adding the query parameter when we send the user away from the login page
+  // Determine if the user is authenticated or not
+  authenticatedSelector: state => !state.user.isLoggedIn,
+  // A nice display name for this check
+  wrapperDisplayName: 'UserIsNotAuthenticated'
+})
 
 const ProtectedHome = userIsAuthenticated(Home)
-// const RedirectedLogin = userIsNotAuthenticated(Login)
+const RedirectedLogin = userIsNotAuthenticated(Login)
 const ProtectedApps = userIsAuthenticated(Apps)
 const ProtectedDocs = userIsAuthenticated(Docs)
 const ProtectedProfile = userIsAuthenticated(Profile)
@@ -59,7 +62,7 @@ class component extends React.Component<Props, {}> {
           </nav>
           <div>
             <Route path="/" exact={true} component={ProtectedHome} />
-            <Route path="/login" component={Login} />
+            <Route path="/login" component={RedirectedLogin} />
             <Route path="/apps" component={ProtectedApps} />
             <Route path="/docs" component={ProtectedDocs} />
             <Route path="/profile" component={ProtectedProfile} />
