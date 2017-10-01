@@ -7,15 +7,15 @@ import { State } from './types'
 
 function guid() {
     var d = new Date().getTime();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c: string) {
         var r = (d + Math.random() * 16) % 16 | 0;
         d = Math.floor(d / 16);
-        return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
     });
     return uuid;
 };
 
-class component extends React.Component<Props, {}> {
+class Component extends React.Component<Props, {}> {
     async loginWithMicrosoftAccount(): Promise<any> {
         // Create unique request key
         const requestKey = `requestKey_${(new Date().getTime())}`
@@ -104,19 +104,13 @@ class component extends React.Component<Props, {}> {
     }
 
     async onClickLogin() {
-        console.log(`onClickLogin`)
-
         try {
             const session = await this.loginWithMicrosoftAccount()
-            console.log(`login successful`, session.user)
             const { login } = this.props
             login(session.user.oid, session.user.name)
+        } catch (error) {
+            throw error
         }
-        catch (error) {
-            console.log(`login error`, error)
-            return
-        }
-
     }
 
     render() {
@@ -144,4 +138,4 @@ const stateProps = returntypeof(mapStateToProps);
 const dispatchProps = returntypeof(mapDispatchToProps);
 type Props = typeof stateProps & typeof dispatchProps;
 
-export default connect<typeof stateProps, typeof dispatchProps, {}>(mapStateToProps, mapDispatchToProps)(component);
+export default connect<typeof stateProps, typeof dispatchProps, {}>(mapStateToProps, mapDispatchToProps)(Component);

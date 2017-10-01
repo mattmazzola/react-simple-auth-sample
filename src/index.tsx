@@ -9,7 +9,6 @@ import rootReducer from './reducers'
 
 export const createReduxStore = () => createStore(rootReducer)
 
-
 ReactDOM.render(
   <Provider store={createReduxStore()}>
     <App />

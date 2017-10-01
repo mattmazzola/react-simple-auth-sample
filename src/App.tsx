@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { returntypeof } from 'react-redux-typescript'
-import { bindActionCreators } from 'redux'
+import { bindActionCreators, Dispatch } from 'redux'
 import { connect } from 'react-redux'
 import {
   BrowserRouter as Router,
@@ -18,6 +18,7 @@ import Docs from './Docs'
 import Login from './Login'
 import Profile from './Profile'
 
+// tslint:disable-next-line:no-any
 const userIsAuthenticated = connectedRouterRedirect<any, State>({
   // The url to redirect user to if they fail
   redirectPath: '/login',
@@ -28,6 +29,7 @@ const userIsAuthenticated = connectedRouterRedirect<any, State>({
 })
 
 const locationHelper = locationHelperBuilder({})
+// tslint:disable-next-line:no-any
 const userIsNotAuthenticated = connectedRouterRedirect<any, State>({
   // This sends the user either to the query param route if we have one, or to the landing page if none is specified and the user is already logged in
   redirectPath: (state, ownProps) => locationHelper.getRedirectQueryParam(ownProps) || '/apps',
@@ -46,7 +48,7 @@ const ProtectedApps = userIsAuthenticated(Apps)
 const ProtectedDocs = userIsAuthenticated(Docs)
 const ProtectedProfile = userIsAuthenticated(Profile)
 
-class component extends React.Component<Props, {}> {
+class Component extends React.Component<Props, {}> {
   render() {
     return (
       <Router>
@@ -73,9 +75,8 @@ class component extends React.Component<Props, {}> {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({
-  }, dispatch)
+const mapDispatchToProps = (dispatch: Dispatch<{}>) => {
+  return bindActionCreators({}, dispatch)
 }
 const mapStateToProps = (state: State) => {
   return {
@@ -87,4 +88,4 @@ const stateProps = returntypeof(mapStateToProps);
 const dispatchProps = returntypeof(mapDispatchToProps);
 type Props = typeof stateProps & typeof dispatchProps;
 
-export default connect<typeof stateProps, typeof dispatchProps, {}>(mapStateToProps, mapDispatchToProps)(component);
+export default connect<typeof stateProps, typeof dispatchProps, {}>(mapStateToProps, mapDispatchToProps)(Component);

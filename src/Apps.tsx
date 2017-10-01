@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { returntypeof } from 'react-redux-typescript'
-import { bindActionCreators } from 'redux'
+import { bindActionCreators, Dispatch } from 'redux'
 import { connect } from 'react-redux'
 import { addApplication } from './actions/appActions'
 import { State } from './types'
@@ -19,7 +19,7 @@ const component = ({ addApplication, apps, user }: Props) => (
     </div>
 )
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: Dispatch<{}>) => {
     return bindActionCreators({
         addApplication
     }, dispatch)
@@ -33,6 +33,6 @@ const mapStateToProps = (state: State) => {
 
 const stateProps = returntypeof(mapStateToProps);
 const dispatchProps = returntypeof(mapDispatchToProps);
-type Props = typeof stateProps & typeof dispatchProps;
+export type Props = typeof stateProps & typeof dispatchProps;
 
 export default connect<typeof stateProps, typeof dispatchProps, {}>(mapStateToProps, mapDispatchToProps)(component);

@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { returntypeof } from 'react-redux-typescript'
-import { bindActionCreators } from 'redux'
+import { bindActionCreators, Dispatch } from 'redux'
 import { connect } from 'react-redux'
 import { logout } from './actions'
 import { State } from './types'
 
-class component extends React.Component<Props, {}> {
+class Component extends React.Component<Props, {}> {
     onClickLogout() {
         const { logout } = this.props
         logout()
@@ -23,7 +23,7 @@ class component extends React.Component<Props, {}> {
     }
 }
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: Dispatch<{}>) => {
     return bindActionCreators({
         logout
     }, dispatch)
@@ -38,4 +38,4 @@ const stateProps = returntypeof(mapStateToProps);
 const dispatchProps = returntypeof(mapDispatchToProps);
 type Props = typeof stateProps & typeof dispatchProps;
 
-export default connect<typeof stateProps, typeof dispatchProps, {}>(mapStateToProps, mapDispatchToProps)(component);
+export default connect<typeof stateProps, typeof dispatchProps, {}>(mapStateToProps, mapDispatchToProps)(Component);
