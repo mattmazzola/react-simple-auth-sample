@@ -6,7 +6,8 @@ export interface AppState {
 
 export interface UserState {
     isLoggedIn: boolean
-    name: string
+    id: string | null
+    name: string | null
 }
 
 export interface State {
