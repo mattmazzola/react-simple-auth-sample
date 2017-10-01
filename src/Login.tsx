@@ -5,6 +5,29 @@ import { connect } from 'react-redux'
 import { login } from './actions'
 import { State } from './types'
 
+export interface IdToken {
+    ver: string
+    iss: string
+    sub: string
+    aud: string
+    exp: number
+    iat: number
+    nbf: number
+    name: string
+    preferred_username: string
+    oid: string
+    tid: string
+    at_hash: string
+    nonce: string
+    aio: string
+}
+
+export interface Session {
+    accessToken: string | null
+    idToken: string | null
+    decodedIdToken: IdToken | null
+}
+
 function guid() {
     var d = new Date().getTime();
     var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c: string) {
@@ -82,17 +105,17 @@ class Component extends React.Component<Props, {}> {
                 }
 
                 let idToken: string | null = null
-                let user: any = null
+                let decodedIdToken: IdToken | null = null
                 const idTokenMatch = redirectUrl.match(/id_token=([^&]+)/)
                 if (idTokenMatch) {
                     idToken = idTokenMatch[1]
-                    user = JSON.parse(atob(idToken.split('.')[1]))
+                    decodedIdToken = JSON.parse(atob(idToken.split('.')[1]))
                 }
 
-                const session = {
+                const session: Session = {
                     accessToken,
                     idToken,
-                    user
+                    decodedIdToken
                 }
 
                 window.localStorage.setItem('session', JSON.stringify(session))

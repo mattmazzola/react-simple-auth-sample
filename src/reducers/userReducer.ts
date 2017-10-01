@@ -2,6 +2,7 @@ import { ActionObject } from '../types'
 import { UserState } from '../types'
 import { AT } from '../types/ActionTypes'
 import { Reducer } from 'redux'
+import { Session } from '../Login'
 
 const unauthenticatedState: UserState = {
     isLoggedIn: false,
@@ -13,10 +14,12 @@ const initialState = { ...unauthenticatedState }
 
 const sessionString = window.localStorage.getItem('session')
 if (typeof sessionString === 'string' && sessionString.length > 0) {
-    const session = JSON.parse(sessionString)
-    initialState.isLoggedIn = true
-    initialState.id = session.user.oid
-    initialState.name = session.user.name
+    const session: Session = JSON.parse(sessionString)
+    if (session.decodedIdToken) {
+        initialState.isLoggedIn = true
+        initialState.id = session.decodedIdToken.oid
+        initialState.name = session.decodedIdToken.name
+    }
 }
 
 const userReducer: Reducer<UserState> = (state = initialState, action: ActionObject): UserState => {
@@ -33,7 +36,5 @@ const userReducer: Reducer<UserState> = (state = initialState, action: ActionObj
             return state;
     }
 }
-
-
 
 export default userReducer;
