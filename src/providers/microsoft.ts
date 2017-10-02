@@ -84,5 +84,9 @@ export const microsoftProvider: IProvider<Session> = {
         // 15 minutes minimum duration until token expires
         const minimumDuration = 1000 * 60 * 15
         return (expiration - now > minimumDuration)
+    },
+
+    getAccessToken(session: Session, resourceId: string): string {
+        return session.accessToken
     }
 }

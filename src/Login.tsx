@@ -4,13 +4,13 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { login } from './actions'
 import { State } from './types'
-import { microsoftProvider, Session } from './providers/microsoft'
+import { microsoftProvider } from './providers/microsoft'
 import { service } from './services/react-simple-auth'
 
 class Component extends React.Component<Props, {}> {
     async onClickLogin() {
         try {
-            const session = await service.acquireTokenAsync<Session>(microsoftProvider)
+            const session = await service.acquireTokenAsync(microsoftProvider)
             const { login } = this.props
             login(session.decodedIdToken.oid, session.decodedIdToken.name)
         } catch (error) {

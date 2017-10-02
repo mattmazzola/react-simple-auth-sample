@@ -2,7 +2,7 @@ import { ActionObject } from '../types'
 import { UserState } from '../types'
 import { AT } from '../types/ActionTypes'
 import { Reducer } from 'redux'
-import { microsoftProvider, Session } from '../providers/microsoft'
+import { microsoftProvider } from '../providers/microsoft'
 import { service } from '../services/react-simple-auth'
 
 const unauthenticatedState: UserState = {
@@ -13,7 +13,7 @@ const unauthenticatedState: UserState = {
 
 const initialState = { ...unauthenticatedState }
 
-const session = service.restoreSession<Session>(microsoftProvider)
+const session = service.restoreSession(microsoftProvider)
 if (session) {
     initialState.isLoggedIn = true
     initialState.id = session.decodedIdToken.oid
@@ -29,6 +29,7 @@ const userReducer: Reducer<UserState> = (state = initialState, action: ActionObj
                 name: action.name
             }
         case AT.USER_LOGOUT:
+            service.invalidateSession()
             return { ...unauthenticatedState };
         default:
             return state;

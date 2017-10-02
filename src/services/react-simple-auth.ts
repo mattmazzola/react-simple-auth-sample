@@ -5,11 +5,14 @@ export interface IProvider<T> {
     extractError(redirectUrl: string): Error | undefined
     extractSession(redirectUrl: string): T
     validateSession(session: T): boolean
+    getAccessToken(session: T, resourceId: string): string
 }
 
 export interface IAuthenticationService {
     acquireTokenAsync<T>(provider: IProvider<T>): Promise<T>
     restoreSession<T>(provider: IProvider<T>): T | undefined
+    invalidateSession(): void
+    getAccessToken<T>(provider: IProvider<T>, resourceId: string): string
 }
 
 export const service: IAuthenticationService = {
@@ -73,9 +76,28 @@ export const service: IAuthenticationService = {
         }
 
         const session: T = JSON.parse(sessionString)
-        return provider.validateSession(session)
-            ? session
-            : undefined
+
+        if (provider.validateSession(session)) {
+            return session
+        }
+
+        window.localStorage.removeItem('session')
+        return undefined
+    },
+
+    invalidateSession(): void {
+        window.localStorage.removeItem('session')
+    },
+
+    getAccessToken<T>(provider: IProvider<T>, resourceId: string): string {
+        const sessionString = window.localStorage.getItem('session')
+        if (typeof sessionString !== 'string' || sessionString.length === 0) {
+            throw new Error(`You attempted to get access token for resource id: ${resourceId} from the session but the session did not exist`)
+        }
+
+        const session: T = JSON.parse(sessionString)
+
+        return provider.getAccessToken(session, resourceId)
     }
 }
 
