@@ -9,7 +9,9 @@
     "react-redux-typescript": "^2.3.0",
     "react-router-dom": "^4.2.2",
     "react-scripts-ts": "2.7.0",
-    "redux-auth-wrapper": "^2.0.2"
+    "redux-auth-wrapper": "^2.0.2",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.2.0"
   },
   "scripts": {
     "start": "react-scripts-ts start",
@@ -24,6 +26,7 @@
     "@types/react-dom": "^15.5.5",
     "@types/react-redux": "^5.0.9",
     "@types/react-router-dom": "^4.0.8",
-    "@types/redux-auth-wrapper": "^2.0.3"
+    "@types/redux-auth-wrapper": "^2.0.3",
+    "@types/redux-logger": "^3.0.4"
   }
 }
