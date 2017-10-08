@@ -1,5 +1,7 @@
 import { guid } from '../services/utilities'
 
+const sessionKey = 'session'
+
 export interface IProvider<T> {
     buildAuthorizeUrl(): string
     extractError(redirectUrl: string): Error | undefined
@@ -18,7 +20,7 @@ export interface IAuthenticationService {
 export const service: IAuthenticationService = {
     acquireTokenAsync<T>(provider: IProvider<T>): Promise<T> {
         // Create unique request key
-        const requestKey = `requestKey_${guid()}`
+        const requestKey = `react-simple-auth-request-key-${guid()}`
         // Set request key as empty in local storage
         window.localStorage.setItem(requestKey, '')
         // Create new window set to authorize url, with unique request key, and centered options
@@ -70,27 +72,27 @@ export const service: IAuthenticationService = {
     },
 
     restoreSession<T>(provider: IProvider<T>): T | undefined {
-        const sessionString = window.localStorage.getItem('session')
+        const sessionString = window.localStorage.getItem(sessionKey)
         if (typeof sessionString !== 'string' || sessionString.length === 0) {
             return undefined
         }
 
         const session: T = JSON.parse(sessionString)
 
-        if (provider.validateSession(session)) {
-            return session
+        if (!provider.validateSession(session)) {
+            window.localStorage.removeItem(sessionKey)
+            return undefined
         }
-
-        window.localStorage.removeItem('session')
-        return undefined
+        
+        return session
     },
 
     invalidateSession(): void {
-        window.localStorage.removeItem('session')
+        window.localStorage.removeItem(sessionKey)
     },
 
     getAccessToken<T>(provider: IProvider<T>, resourceId: string): string {
-        const sessionString = window.localStorage.getItem('session')
+        const sessionString = window.localStorage.getItem(sessionKey)
         if (typeof sessionString !== 'string' || sessionString.length === 0) {
             throw new Error(`You attempted to get access token for resource id: ${resourceId} from the session but the session did not exist`)
         }
