@@ -63,7 +63,7 @@ export const service: IAuthenticationService = {
 
                 // Window was closed, reached redirect.html and correctly added tokens to the url
                 const session = provider.extractSession(redirectUrl)
-                window.localStorage.setItem('session', JSON.stringify(session))
+                window.localStorage.setItem(sessionKey, JSON.stringify(session))
                 resolve(session)
             }
 
