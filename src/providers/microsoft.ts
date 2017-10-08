@@ -79,7 +79,13 @@ export const microsoftProvider: IProvider<Session> = {
 
     validateSession(session: Session): boolean {
         const now = (new Date()).getTime()
-        const expiration = session.decodedIdToken.exp * 1000
+        
+        // With normal JWT tokens you can inspect the `exp` Expiration claim; however,
+        // AAD V2 tokens are opaque and we must assume the expiration
+        // Here we are leveraging the fact that the access token was issued at the same
+        // time as the ID token and can use its `iat` Issued At claim
+        const wellKnownTokenDuration = 1000 * 60 * 60
+        const expiration = (session.decodedIdToken.iat * 1000) + wellKnownTokenDuration
 
         // 15 minutes minimum duration until token expires
         const minimumDuration = 1000 * 60 * 15
