@@ -10,7 +10,12 @@ export interface UserState {
     name: string | null
 }
 
+export interface ProfileState {
+    current: any
+}
+
 export interface State {
     user: UserState
     apps: AppState
+    profile: ProfileState
 }

@@ -19,7 +19,18 @@ export interface UserLogoutAction {
     type: AT.USER_LOGOUT
 }
 
+export interface FetchProfile {
+    type: AT.FETCH_PROFILE
+}
+
+export interface FetchProfileFulfilled {
+    type: AT.FETCH_PROFILE_FULFILLED
+    profile: any
+}
+
 export type ActionObject =
     AddAppAction |
     UserLoginAction |
-    UserLogoutAction
+    UserLogoutAction |
+    FetchProfile |
+    FetchProfileFulfilled
