@@ -39,8 +39,8 @@ export const microsoftProvider: IProvider<Session> = {
         &login_hint=mattmazzola%40live.com
         &domain_req=${guid()}
         &login_req=${guid()}
-        &domain_hint=consumers`
-        // &prompt=none
+        &domain_hint=consumers
+        &prompt=login`
     },
 
     extractError(redirectUrl: string): Error | undefined {
