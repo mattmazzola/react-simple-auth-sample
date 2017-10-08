@@ -2,8 +2,8 @@ import * as React from 'react'
 import { returntypeof } from 'react-redux-typescript'
 import { bindActionCreators, Dispatch } from 'redux'
 import { connect } from 'react-redux'
-import { fetchProfile } from './actions/graphApiActions'
-import { State } from './types'
+import { fetchProfile } from '../actions/graphApiActions'
+import { State } from '../types'
 
 const component = ({ fetchProfile, profile }: Props) => (
     <div>

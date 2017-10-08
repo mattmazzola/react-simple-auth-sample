@@ -2,8 +2,8 @@ import * as React from 'react'
 import { returntypeof } from 'react-redux-typescript'
 import { bindActionCreators, Dispatch } from 'redux'
 import { connect } from 'react-redux'
-import { logout } from './actions'
-import { State } from './types'
+import { logout } from '../actions'
+import { State } from '../types'
 import './Profile.css'
 
 class Component extends React.Component<Props, {}> {

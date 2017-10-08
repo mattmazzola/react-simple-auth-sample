@@ -2,8 +2,8 @@ import * as React from 'react'
 import { returntypeof } from 'react-redux-typescript'
 import { bindActionCreators, Dispatch } from 'redux'
 import { connect } from 'react-redux'
-import { addApplication } from './actions/appActions'
-import { State } from './types'
+import { addApplication } from '../actions/appActions'
+import { State } from '../types'
 
 const component = ({ addApplication, apps, user }: Props) => (
     <div>
