@@ -52,17 +52,15 @@ class Component extends React.Component<Props, {}> {
   render() {
     return (
       <Router>
-        <div>
-          <h1>React Auth Test</h1>
-          <nav>
-            <ul>
-              <li><NavLink to="/" exact={true}>Home</NavLink></li>
-              <li><NavLink to="/apps">Apps</NavLink></li>
-              <li><NavLink to="/docs">Docs</NavLink></li>
-              {this.props.user.isLoggedIn && <li><NavLink to="/profile">Profile</NavLink></li>}
-            </ul>
+        <div className="app">
+          <nav className="nav">
+            <div className="title">React Auth</div>
+            <NavLink to="/" exact={true}>Home</NavLink>
+            <NavLink to="/apps">Apps</NavLink>
+            <NavLink to="/docs">Docs</NavLink>
+            {this.props.user.isLoggedIn && <NavLink to="/profile">Profile</NavLink>}
           </nav>
-          <div>
+          <div className="app_content">
             <Route path="/" exact={true} component={ProtectedHome} />
             <Route path="/login" component={RedirectedLogin} />
             <Route path="/apps" component={ProtectedApps} />

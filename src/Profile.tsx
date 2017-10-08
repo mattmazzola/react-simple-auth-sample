@@ -4,42 +4,9 @@ import { bindActionCreators, Dispatch } from 'redux'
 import { connect } from 'react-redux'
 import { logout } from './actions'
 import { State } from './types'
-import { microsoftProvider } from './providers/microsoft'
-import { service } from './services/react-simple-auth'
+import './Profile.css'
 
-interface ComponentState {
-    data: any
-}
-
-class Component extends React.Component<Props, ComponentState> {
-    componentWillMount() {
-        this.setState({
-            data: null
-        })
-    }
-
-    componentDidMount() {
-        const graphApiBaseUri = `https://graph.microsoft.com/v1.0`
-        const token = service.getAccessToken(microsoftProvider, graphApiBaseUri)
-        fetch(`${graphApiBaseUri}/me`, {
-            headers: {
-                Accept: 'application/json',
-                Authorization: `Bearer ${token}`
-            }
-        })
-            .then(response =>
-                response.json()
-                    .then(json => {
-                        if (!response.ok) {
-                            throw new Error(json)
-                        }
-
-                        this.setState({
-                            data: json
-                        })
-                    }))
-    }
-
+class Component extends React.Component<Props, {}> {
     onClickLogout() {
         const { logout } = this.props
         logout()
@@ -51,8 +18,7 @@ class Component extends React.Component<Props, ComponentState> {
         return (
             <div>
                 <h1>Profile: {user.name}</h1>
-                <p>UPN: {this.state.data && this.state.data.userPrincipalName}</p>
-                <button type="button" onClick={() => this.onClickLogout()}>Logout</button>
+                <button type="button" className="button-logout" onClick={() => this.onClickLogout()}>Logout</button>
             </div>
         )
     }

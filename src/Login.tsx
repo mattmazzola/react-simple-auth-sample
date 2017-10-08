@@ -6,6 +6,7 @@ import { login } from './actions'
 import { State } from './types'
 import { microsoftProvider } from './providers/microsoft'
 import { service } from './services/react-simple-auth'
+import './Login.css'
 
 class Component extends React.Component<Props, {}> {
     async onClickLogin() {
@@ -20,9 +21,13 @@ class Component extends React.Component<Props, {}> {
 
     render() {
         return (
-            <div>
-                <h1>Login</h1>
-                <button type="button" onClick={() => this.onClickLogin()}>Login</button>
+            <div className="login">
+                <div className="login-providers">
+                    <h4>Login:</h4>
+                    <button type="button" className="login-button" onClick={() => this.onClickLogin()}>
+                        <img src="/images/sign-in-with-microsoft-light.png" alt="Login with Microsoft" />
+                    </button>
+                </div>
             </div>
         )
     }

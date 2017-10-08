@@ -1,0 +1,25 @@
+.login {
+    height: 100%;
+    display: grid;
+    justify-content: center;
+    align-content: center;
+}
+
+.login-providers {
+    display: grid;
+    grid-auto-rows: min-content;
+    grid-gap: 1em;
+    text-align: center;
+}
+
+.login-button {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+.login-button img {
+    display: block;
+}
