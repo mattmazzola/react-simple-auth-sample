@@ -94,5 +94,9 @@ export const microsoftProvider: IProvider<Session> = {
 
     getAccessToken(session: Session, resourceId: string): string {
         return session.accessToken
+    },
+
+    getSignOutUrl(redirectUrl: string): string {
+        return `https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=${encodeURIComponent(redirectUrl)}`
     }
 }

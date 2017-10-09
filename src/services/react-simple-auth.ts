@@ -8,6 +8,7 @@ export interface IProvider<T> {
     extractSession(redirectUrl: string): T
     validateSession(session: T): boolean
     getAccessToken(session: T, resourceId: string): string
+    getSignOutUrl(redirectUrl: string): string
 }
 
 export interface IAuthenticationService {
