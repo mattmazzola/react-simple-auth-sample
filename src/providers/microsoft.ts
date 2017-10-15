@@ -1,4 +1,4 @@
-import { IProvider } from '../services/react-simple-auth'
+import { IProvider } from 'react-simple-auth'
 import { guid } from '../services/utilities'
 
 export interface IdToken {
