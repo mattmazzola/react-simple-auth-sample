@@ -20,6 +20,7 @@ export interface IdToken {
 
 export interface Session {
     accessToken: string
+    expireDurationSeconds: number
     idToken: string
     decodedIdToken: IdToken
 }
@@ -70,26 +71,35 @@ export const microsoftProvider: IProvider<Session> = {
             decodedIdToken = JSON.parse(atob(idToken.split('.')[1]))
         }
 
+        let expireDurationSeconds: number = 3600
+        const expireDurationSecondsMatch = redirectUrl.match(/expires_in=([^&]+)/)
+        if (expireDurationSecondsMatch) {
+            expireDurationSeconds = parseInt(expireDurationSecondsMatch[1])
+        }
+
         return {
             accessToken,
+            expireDurationSeconds,
             idToken,
             decodedIdToken
         }
     },
 
     validateSession(session: Session): boolean {
-        const now = (new Date()).getTime()
+        const now = (new Date()).getTime() / 1000
         
         // With normal JWT tokens you can inspect the `exp` Expiration claim; however,
-        // AAD V2 tokens are opaque and we must assume the expiration
+        // AAD V2 tokens are opaque and we must use the token meta about expiration time
+        // "When you request an access token from the v2.0 endpoint, the v2.0 endpoint also returns metadata about the access token for your app to use."
+        // See: https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-tokens
         // Here we are leveraging the fact that the access token was issued at the same
-        // time as the ID token and can use its `iat` Issued At claim
-        const wellKnownTokenDuration = 1000 * 60 * 60
-        const expiration = (session.decodedIdToken.iat * 1000) + wellKnownTokenDuration
+        // time as the ID token and can use its `iat` Issued At claim + the duration
+        // to compute an absolute expiration time
+        const expiration = session.decodedIdToken.iat + session.expireDurationSeconds
 
         // 15 minutes minimum duration until token expires
-        const minimumDuration = 1000 * 60 * 15
-        return (expiration - now > minimumDuration)
+        const minimumDuration = 60 * 15
+        return (expiration - now) > minimumDuration
     },
 
     getAccessToken(session: Session, resourceId: string): string {
